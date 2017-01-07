@@ -57,6 +57,18 @@ func (p *UnixProcess) Refresh() error {
 		&p.ppid,
 		&p.pgrp,
 		&p.sid)
+	if err != nil {
+		return err
+	}
+	cmdlinePath := fmt.Sprintf("/proc/%d/cmdline".p.pid)
+	cmdlineBytes, err := ioutil.ReadFile(cmdlinePath)
+	if err != nil {
+		return err
+	}
+	cmdlinedata := string(cmdlineBytes)
+	_, err = fmt.Sscanf(cmdlinedata,
+		"%s",
+		&p.cmdline)
 
 	return err
 }
